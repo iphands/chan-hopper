@@ -4,14 +4,12 @@ import iperf3
 import json
 import time
 import subprocess
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-
-from datetime import datetime
 from icmplib import ping
 
 results = {}
-best = 0
-best_chan = 0
 
 channels_two = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
@@ -170,18 +168,18 @@ class NetworkManager:
 
     def wait_for_chan(self, chan):
         print(f"-- Waiting for channel switch: {chan}")
-        start = datetime.now()
-        for i in range(0, 300):
-            for _ in range(1, 50):
+        start = time.time()
+        for _ in range(0, 300):
+            for _ in range(1, 100):
                 out = subprocess.check_output(["iw", "dev"])
                 out = str(out)
                 if f"channel {chan}" in out:
-                    end = datetime.now()
-                    delta = end - start
-                    delta = delta.microseconds / 1000
+                    end = time.time()
+                    delta = (end - start) * 1000
+                    delta = '{:.2f}'.format(delta)
                     print(f"   channel switch hit after {delta}ms")
                     return True
-                time.sleep(0.100)
+                time.sleep(0.1)
                 continue
             self.try_reconnect()
             time.sleep(1)
@@ -189,27 +187,32 @@ class NetworkManager:
         return False
 
 
-def run_test(host, time, chan):
-    global best
-    global best_chan
+class Tester():
+    def __init__(self, host, t):
+        self.host = host
+        self.time = t
+        self.best = 0
+        self.best_chan = 0
+        self.results = {}
 
-    print("-- Running test")
-    client = iperf3.Client()
-    client.duration = time
-    client.server_hostname = host
-    client.port = 5201
-    res = client.run()
-    o = json.loads(res.text)
-    results[chan] = o
-    summary = o["end"]["sum_sent"]["bits_per_second"]
+    def run(self, chan):
+        print("-- Running test")
+        client = iperf3.Client()
+        client.duration = int(self.time)
+        client.server_hostname = self.host
+        client.port = 5201
+        res = client.run()
+        o = json.loads(res.text)
+        results[chan] = o
+        summary = o["end"]["sum_sent"]["bits_per_second"]
 
-    if summary > best:
-        best = summary
-        best_chan = chan
+        if summary > self.best:
+            self.best = summary
+            self.best_chan = chan
 
-    print(
-        f"   done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(best)} on {best_chan}"
-    )
+        print(
+            f"   done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(self.best)} on {self.best_chan}"
+        )
 
 
 def wait_for_ping():
@@ -244,12 +247,14 @@ def wait_for_ping():
 )
 @click.option("--time", "t", default=90, help="Time in seconds to run each iperf3 test")
 def main(ap_id, unifi_host, iperf_host, mode, nm_uuid, t=90):
+    start = time.time()
     chans = channels_two
     if mode == "5":
         channels_five
 
     client = Client(f"https://{unifi_host}")
     nm = NetworkManager(nm_uuid)
+    tester = Tester(unifi_host, t)
 
     for chan in chans:
         print(f"-- Changing to channel: {chan}")
@@ -259,10 +264,16 @@ def main(ap_id, unifi_host, iperf_host, mode, nm_uuid, t=90):
             continue
         wait_for_ping()
         time.sleep(5)  # settle just a bit
-        run_test(unifi_host, t, chan)
+        tester.run(chan)
 
-    with open("results.json", "w") as f:
+    end = time.time()
+    delta = end - start
+    print('\nDone!')
+    print('Run took {:.2f}s'.format(delta))
+    out_file = f'results.{int(start)}.json'
+    with open(out_file, "w") as f:
         f.write(json.dumps(results))
+        print(f'Wrote results to: {out_file}')
 
 
 if __name__ == "__main__":
