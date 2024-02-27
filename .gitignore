@@ -2,3 +2,4 @@ untracked
 venv
 results.*.json
 __pycache__
+.pyre
