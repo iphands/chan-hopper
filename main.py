@@ -5,6 +5,8 @@ import json
 import time
 import subprocess
 
+
+from datetime import datetime
 from icmplib import ping
 
 results = {}
@@ -139,19 +141,61 @@ class Client:
             self.get_settings_data(chan_two, chan_five),
         )
 
+class Utils:
+    def mbps(n):
+        return "{:.2f} Mbs".format(n / 1000 / 1000)
 
-def mbps(n):
-    return "{:.2f} Mbs".format(n / 1000 / 1000)
+class NetworkManager():
+    def __init__(self, uuid):
+        self.uuid = uuid
 
 
-def run_test(chan):
+    def try_reconnect(self):
+        print("-- ERROR: trying reconnect!")
+        for _ in range(0, 100):
+            try:
+                try:
+                    # Note this will fail if not already active
+                    # in that case its okay to continue with up
+                    subprocess.check_output(["nmcli", "conn", "down", self.uuid])
+                except:
+                    pass
+                time.sleep(1)
+                subprocess.check_output(["nmcli", "conn", "up", self.uuid])
+                time.sleep(1)
+                break
+            except:
+                pass
+
+    def wait_for_chan(self, chan):
+        print(f"-- Waiting for channel switch: {chan}")
+        start = datetime.now()
+        for i in range(0, 300):
+            for _ in range(1, 50):
+                out = subprocess.check_output(["iw", "dev"])
+                out = str(out)
+                if f"channel {chan}" in out:
+                    end = datetime.now()
+                    delta = end - start
+                    delta = delta.microseconds / 1000
+                    print(f"   channel switch hit after {delta}ms")
+                    return True
+                time.sleep(0.100)
+                continue
+            self.try_reconnect()
+            time.sleep(1)
+        print("   wait_for_chan failed!")
+        return False
+
+
+def run_test(host, time, chan):
     global best
     global best_chan
 
     print("-- Running test")
     client = iperf3.Client()
-    client.duration = 90
-    client.server_hostname = "noir.lan"
+    client.duration = time
+    client.server_hostname = host
     client.port = 5201
     res = client.run()
     o = json.loads(res.text)
@@ -162,37 +206,7 @@ def run_test(chan):
         best = summary
         best_chan = chan
 
-    print(f"   done (curr: {mbps(summary)}) best: {mbps(best)} on {best_chan}")
-
-
-def try_reconnect(uuid):
-    print("-- ERROR: trying reconnect!")
-    for _ in range(0, 100):
-        try:
-            subprocess.check_output(["nmcli", "conn", "down", uuid])
-            time.sleep(1)
-            subprocess.check_output(["nmcli", "conn", "up", uuid])
-            time.sleep(1)
-            break
-        except:
-            pass
-
-
-def wait_for_chan(chan):
-    print(f"-- Waiting for channel switch: {chan}")
-    for i in range(0, 300):
-        out = subprocess.check_output(["iw", "dev"])
-        out = str(out)
-        if f"channel {chan}" in out:
-            print(f"   channel switch hit after {i}s")
-            return True
-        if i % 2 == 0:
-            try_reconnect()
-            time.sleep(1)
-
-    # assert False, "wait_for_chan failed!"
-    print("   wait_for_chan failed!")
-    return False
+    print(f"   done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(best)} on {best_chan}")
 
 
 def wait_for_ping():
@@ -216,29 +230,33 @@ def wait_for_ping():
 
 
 @click.command()
-@click.option("--host", help="Base URL for host of unifi controller", required=True)
+@click.option("--ap-id", help="The ID of the AP in Unif controller", required=True)
+@click.option("--unifi-host", help="Hostname of the Unifi controller", required=True)
+@click.option("--iperf-host", help="Hostname of the iperf3 server", required=True)
 @click.option(
     "--mode", type=click.Choice(["2", "5"]), help="2.4Ghz or 5Ghz mode", required=True
 )
 @click.option(
     "--nm-uuid", help="UUID of NetworkManager connection to activate", required=True
 )
-def main(host, mode, nm_uuid):
+@click.option("--time", 't', default=90, help="Time in seconds to run each iperf3 test")
+def main(ap_id, unifi_host, iperf_host, mode, nm_uuid, t=90):
     chans = channels_two
     if mode == "5":
         channels_five
 
-    client = Client(host)
+    client = Client(f'https://{unifi_host}')
+    nm = NetworkManager(nm_uuid)
 
     for chan in chans:
         print(f"-- Changing to channel: {chan}")
         client.change_chan(chan, 124)
-        if not wait_for_chan(chan):
+        if not nm.wait_for_chan(chan):
             results[chan] = False
             continue
         wait_for_ping()
         time.sleep(5)  # settle just a bit
-        run_test(chan)
+        run_test(unifi_host, t, chan)
 
     with open("results.json", "w") as f:
         f.write(json.dumps(results))
