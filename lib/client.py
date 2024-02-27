@@ -4,8 +4,10 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Client:
-    def __init__(self, host):
-        self.host = host
+    def __init__(self, ap_id, host):
+        self.ap_id = ap_id
+        self.host = f'https://{host}'
+
         self.cookies = {
             "unifises": "W0SkTLVjwkR4fpuX7Wu5hnl8gYzVOCFR",
             "csrf_token": "hSZBMDrKl7wRbOJjEXnwH6OV7RVxdXgC",
@@ -96,6 +98,6 @@ class Client:
 
     def change_chan(self, chan_two, chan_five):
         return self.put(
-            "/api/s/default/rest/device/5de8531246e0fb00f79da35c",
+            f'/api/s/default/rest/device/{self.ap_id}',
             self.get_settings_data(chan_two, chan_five),
         )
