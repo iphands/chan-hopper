@@ -141,14 +141,15 @@ class Client:
             self.get_settings_data(chan_two, chan_five),
         )
 
+
 class Utils:
     def mbps(n):
         return "{:.2f} Mbs".format(n / 1000 / 1000)
 
-class NetworkManager():
+
+class NetworkManager:
     def __init__(self, uuid):
         self.uuid = uuid
-
 
     def try_reconnect(self):
         print("-- ERROR: trying reconnect!")
@@ -206,7 +207,9 @@ def run_test(host, time, chan):
         best = summary
         best_chan = chan
 
-    print(f"   done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(best)} on {best_chan}")
+    print(
+        f"   done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(best)} on {best_chan}"
+    )
 
 
 def wait_for_ping():
@@ -239,13 +242,13 @@ def wait_for_ping():
 @click.option(
     "--nm-uuid", help="UUID of NetworkManager connection to activate", required=True
 )
-@click.option("--time", 't', default=90, help="Time in seconds to run each iperf3 test")
+@click.option("--time", "t", default=90, help="Time in seconds to run each iperf3 test")
 def main(ap_id, unifi_host, iperf_host, mode, nm_uuid, t=90):
     chans = channels_two
     if mode == "5":
         channels_five
 
-    client = Client(f'https://{unifi_host}')
+    client = Client(f"https://{unifi_host}")
     nm = NetworkManager(nm_uuid)
 
     for chan in chans:
