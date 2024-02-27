@@ -1,5 +1,6 @@
 from typing import List, Tuple
 
+
 class Utils:
     @staticmethod
     def get_channels() -> Tuple[List[int], List[int]]:

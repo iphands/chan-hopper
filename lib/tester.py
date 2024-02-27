@@ -4,6 +4,7 @@ import json
 from .utils import Utils
 from typing import Any, Dict
 
+
 class Tester:
     def __init__(self, host: str, t: int) -> None:
         self.host = host
@@ -13,7 +14,6 @@ class Tester:
 
         # pyre-ignore[4]:
         self.results: Dict[int, Any] = {}
-
 
     # pyre-ignore[3]:
     def get_results(self) -> Dict[int, Any]:

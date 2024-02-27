@@ -16,7 +16,9 @@ from lib.utils import Utils
 @click.option("--mode", type=click.Choice(["2", "5"]), help="2.4Ghz or 5Ghz mode", required=True)
 @click.option("--nm-uuid", help="UUID of NetworkManager connection to activate", required=True)
 @click.option("--time", "t", default=90, help="Time in seconds to run each iperf3 test")
-def main(ap_id: str, unifi_host: str, iperf_host: str, mode: int, nm_uuid: str, t: int=90) -> None:
+def main(
+    ap_id: str, unifi_host: str, iperf_host: str, mode: int, nm_uuid: str, t: int = 90
+) -> None:
     start = time.time()
     channels_two, channels_five = Utils.get_channels()
     chans = channels_two
