@@ -15,13 +15,11 @@ class Client:
         }
 
         self.headers = {
-            "authority": "unifi-controller.noir.lan",
+            "authority": self.host,
             "accept": "application/json, text/plain, */*",
             "accept-language": "en-US,en;q=0.9",
             "content-type": "application/json;charset=utf-8",
             "dnt": "1",
-            "origin": "https://unifi-controller.noir.lan",
-            "referer": "https://unifi-controller.noir.lan/manage/default/devices/properties/b4:fb:e4:e1:53:11/settings",
             "sec-ch-ua": '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Linux"',

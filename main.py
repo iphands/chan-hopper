@@ -31,14 +31,14 @@ def main(ap_id, unifi_host, iperf_host, mode, nm_uuid, t=90):
 
     client = Client(ap_id, unifi_host)
     nm = NetworkManager(nm_uuid)
-    tester = Tester(unifi_host, t)
+    tester = Tester(iperf_host, t)
 
     for chan in chans:
         print(f"-- Changing to channel: {chan}")
         client.change_chan(chan, 124)
         if not nm.wait_for_chan(chan):
             continue
-        Pinger.wait_for_ping()
+        Pinger.wait_for_ping(iperf_host)
         time.sleep(5)  # settle just a bit
         tester.run(chan)
 
