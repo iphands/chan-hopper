@@ -2,7 +2,6 @@ import subprocess
 import time
 
 
-
 class NetworkManager:
     def __init__(self, uuid):
         self.uuid = uuid
@@ -34,7 +33,7 @@ class NetworkManager:
                 if f"channel {chan}" in out:
                     end = time.time()
                     delta = (end - start) * 1000
-                    delta = '{:.2f}'.format(delta)
+                    delta = "{:.2f}".format(delta)
                     print(f"   channel switch hit after {delta}ms")
                     return True
                 time.sleep(0.1)

@@ -1,5 +1,6 @@
 from icmplib import ping
 
+
 class Pinger:
     def wait_for_ping():
         print("-- Waiting for ping:")

@@ -9,8 +9,6 @@ from lib.nm import NetworkManager
 from lib.utils import Utils
 
 
-
-
 @click.command()
 @click.option("--ap-id", help="The ID of the AP in Unif controller", required=True)
 @click.option("--unifi-host", help="Hostname of the Unifi controller", required=True)
@@ -46,12 +44,12 @@ def main(ap_id, unifi_host, iperf_host, mode, nm_uuid, t=90):
 
     end = time.time()
     delta = end - start
-    print('\nDone!')
-    print('Run took {:.2f}s'.format(delta))
-    out_file = f'results.{int(start)}.json'
+    print("\nDone!")
+    print("Run took {:.2f}s".format(delta))
+    out_file = f"results.{int(start)}.json"
     with open(out_file, "w") as f:
         f.write(json.dumps(tester.get_results()))
-        print(f'Wrote results to: {out_file}')
+        print(f"Wrote results to: {out_file}")
 
 
 if __name__ == "__main__":

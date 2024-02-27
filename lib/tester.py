@@ -3,7 +3,8 @@ import json
 
 from .utils import Utils
 
-class Tester():
+
+class Tester:
     def __init__(self, host, t):
         self.host = host
         self.time = t
