@@ -1,0 +1,13 @@
+black @ git+https://github.com/psf/black@899002399a26348198612503ce6ca2fc298551a6
+certifi==2024.2.2
+charset-normalizer==3.3.2
+click==8.1.7
+icmplib==3.0.4
+idna==3.6
+iperf3==0.1.11
+mypy-extensions==1.0.0
+packaging==23.2
+pathspec==0.12.1
+platformdirs==4.2.0
+requests==2.31.0
+urllib3==2.2.1
