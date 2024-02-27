@@ -2,7 +2,9 @@ from icmplib import ping
 
 
 class Pinger:
-    def wait_for_ping(host):
+
+    @staticmethod
+    def wait_for_ping(host: str) -> None:
         print("-- Waiting for ping:")
         for i in range(0, 100):
             try:

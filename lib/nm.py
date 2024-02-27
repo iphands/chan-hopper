@@ -3,10 +3,10 @@ import time
 
 
 class NetworkManager:
-    def __init__(self, uuid):
+    def __init__(self, uuid: str) -> None:
         self.uuid = uuid
 
-    def try_reconnect(self):
+    def try_reconnect(self) -> None:
         print("-- ERROR: trying reconnect!")
         for _ in range(0, 100):
             try:
@@ -23,7 +23,7 @@ class NetworkManager:
             except:
                 pass
 
-    def wait_for_chan(self, chan):
+    def wait_for_chan(self, chan: int) -> bool:
         print(f"-- Waiting for channel switch: {chan}")
         start = time.time()
         for _ in range(0, 300):

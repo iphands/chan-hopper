@@ -2,20 +2,24 @@ import iperf3
 import json
 
 from .utils import Utils
-
+from typing import Any, Dict
 
 class Tester:
-    def __init__(self, host, t):
+    def __init__(self, host: str, t: int) -> None:
         self.host = host
         self.time = t
         self.best = 0
         self.best_chan = 0
-        self.results = {}
 
-    def get_results(self):
+        # pyre-ignore[4]:
+        self.results: Dict[int, Any] = {}
+
+
+    # pyre-ignore[3]:
+    def get_results(self) -> Dict[int, Any]:
         return self.results
 
-    def run(self, chan):
+    def run(self, chan: int) -> None:
         print("-- Running test")
         client = iperf3.Client()
         client.duration = int(self.time)

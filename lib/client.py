@@ -1,11 +1,13 @@
 import requests
 import urllib3
 
+from typing import Any, Dict
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Client:
-    def __init__(self, ap_id, host):
+    def __init__(self, ap_id: str, host: str) -> None:
         self.ap_id = ap_id
         self.host = f"https://{host}"
 
@@ -14,7 +16,7 @@ class Client:
             "csrf_token": "hSZBMDrKl7wRbOJjEXnwH6OV7RVxdXgC",
         }
 
-        self.headers = {
+        self.headers: Dict[str, str] = {
             "authority": self.host,
             "accept": "application/json, text/plain, */*",
             "accept-language": "en-US,en;q=0.9",
@@ -30,12 +32,12 @@ class Client:
             "x-csrf-token": "hSZBMDrKl7wRbOJjEXnwH6OV7RVxdXgC",
         }
 
-    def get_url(self, frag):
+    def get_url(self, frag: str) -> str:
         url = f"{self.host}{frag}"
         # print(f"DEBUG: url: {url}")
         return url
 
-    def get_settings_data(self, chan_two, chan_five):
+    def get_settings_data(self, chan_two: int, chan_five: int) -> Dict[str, Any]:
         json_data = {
             "atf_enabled": False,
             "mesh_sta_vap_enabled": False,
@@ -76,7 +78,7 @@ class Client:
 
         return json_data
 
-    def put(self, frag, data):
+    def put(self, frag: str, data: Dict[str, Any]) -> str:
         response = requests.put(
             self.get_url(frag),
             cookies=self.cookies,
@@ -86,7 +88,7 @@ class Client:
         )
         return response.json()
 
-    def get(self, frag):
+    def get(self, frag: str) -> str:
         response = requests.get(
             self.get_url(frag),
             cookies=self.cookies,
@@ -95,7 +97,7 @@ class Client:
         )
         return response.json()
 
-    def change_chan(self, chan_two, chan_five):
+    def change_chan(self, chan_two: int, chan_five: int) -> str:
         return self.put(
             f"/api/s/default/rest/device/{self.ap_id}",
             self.get_settings_data(chan_two, chan_five),

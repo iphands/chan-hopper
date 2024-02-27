@@ -1,5 +1,8 @@
+from typing import List, Tuple
+
 class Utils:
-    def get_channels():
+    @staticmethod
+    def get_channels() -> Tuple[List[int], List[int]]:
         channels_two = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
         # fmt: off
@@ -11,5 +14,6 @@ class Utils:
 
         return channels_two, channels_five
 
-    def mbps(n):
+    @staticmethod
+    def mbps(n: int) -> str:
         return "{:.2f} Mbs".format(n / 1000 / 1000)
