@@ -13,12 +13,8 @@ from lib.utils import Utils
 @click.option("--ap-id", help="The ID of the AP in Unif controller", required=True)
 @click.option("--unifi-host", help="Hostname of the Unifi controller", required=True)
 @click.option("--iperf-host", help="Hostname of the iperf3 server", required=True)
-@click.option(
-    "--mode", type=click.Choice(["2", "5"]), help="2.4Ghz or 5Ghz mode", required=True
-)
-@click.option(
-    "--nm-uuid", help="UUID of NetworkManager connection to activate", required=True
-)
+@click.option("--mode", type=click.Choice(["2", "5"]), help="2.4Ghz or 5Ghz mode", required=True)
+@click.option("--nm-uuid", help="UUID of NetworkManager connection to activate", required=True)
 @click.option("--time", "t", default=90, help="Time in seconds to run each iperf3 test")
 def main(ap_id, unifi_host, iperf_host, mode, nm_uuid, t=90):
     start = time.time()
