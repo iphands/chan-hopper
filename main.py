@@ -68,8 +68,6 @@ class Client:
             "x-csrf-token": "hSZBMDrKl7wRbOJjEXnwH6OV7RVxdXgC",
         }
 
-
-
     def get_url(self, frag):
         url = f"{self.host}{frag}"
         # print(f"DEBUG: url: {url}")
@@ -116,7 +114,6 @@ class Client:
 
         return json_data
 
-
     def put(self, frag, data):
         response = requests.put(
             self.get_url(frag),
@@ -127,7 +124,6 @@ class Client:
         )
         return response.json()
 
-
     def get(self, frag):
         response = requests.get(
             self.get_url(frag),
@@ -136,7 +132,6 @@ class Client:
             verify=False,
         )
         return response.json()
-
 
     def change_chan(self, chan_two, chan_five):
         return self.put(
