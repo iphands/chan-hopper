@@ -1,3 +1,4 @@
+# pyre-ignore[21]:
 from icmplib import ping
 
 

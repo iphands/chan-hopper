@@ -1,3 +1,4 @@
+# pyre-ignore[21]:
 import iperf3
 import json
 
