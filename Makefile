@@ -1,3 +1,3 @@
 .PHONY: check
 check:
-	black . && pyre
+	black . && pyre && python ./test.py
