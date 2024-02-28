@@ -1,7 +1,20 @@
+import sys
 from typing import List, Tuple
 
 
+class Say:
+    @staticmethod
+    def start(s: str) -> None:
+        sys.stdout.write(f"-- {s}: ")
+        sys.stdout.flush()
+
+    @staticmethod
+    def end(s: str = "done") -> None:
+        print(s)
+
+
 class Utils:
+
     @staticmethod
     def get_channels() -> Tuple[List[int], List[int]]:
         channels_two = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]

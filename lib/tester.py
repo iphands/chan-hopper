@@ -2,7 +2,7 @@
 import iperf3
 import json
 
-from .utils import Utils
+from .utils import Say, Utils
 from typing import Any, Dict
 
 
@@ -21,7 +21,7 @@ class Tester:
         return self.results
 
     def run(self, chan: int) -> None:
-        print("-- Running test")
+        Say.start("Running test")
         client = iperf3.Client()
         client.duration = int(self.time)
         client.server_hostname = self.host
@@ -35,6 +35,7 @@ class Tester:
             self.best = summary
             self.best_chan = chan
 
-        print(
-            f"   done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(self.best)} on {self.best_chan}"
+        deets = (
+            f"done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(self.best)} on {self.best_chan}"
         )
+        Say.end(deets)

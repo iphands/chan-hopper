@@ -6,7 +6,7 @@ from lib.tester import Tester
 from lib.client import Client
 from lib.pinger import Pinger
 from lib.nm import NetworkManager
-from lib.utils import Utils
+from lib.utils import Say, Utils
 
 
 @click.command()
@@ -32,7 +32,7 @@ def main(
     tester = Tester(iperf_host, t)
 
     for chan in chans:
-        print(f"-- Changing to channel: {chan}")
+        Say.start("Changing to channel: {chan}\n")
         client.change_chan(chan, 124)
         if not nm.wait_for_chan(chan):
             continue
@@ -42,7 +42,7 @@ def main(
 
     end = time.time()
     delta = end - start
-    print("\nDone!")
+    Say.start("\nDone!\n")
     print("Run took {:.2f}s".format(delta))
     out_file = f"results.{int(start)}.json"
     with open(out_file, "w") as f:

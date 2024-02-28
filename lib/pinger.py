@@ -1,12 +1,13 @@
 # pyre-ignore[21]:
 from icmplib import ping
+from .utils import Say
 
 
 class Pinger:
 
     @staticmethod
     def wait_for_ping(host: str) -> None:
-        print("-- Waiting for ping:")
+        Say.start("Waiting for ping")
         for i in range(0, 100):
             try:
                 ping(
@@ -19,7 +20,7 @@ class Pinger:
                     family=None,
                     privileged=False,
                 )
-                print("   done")
+                Say.end()
                 return
             except:
                 pass
