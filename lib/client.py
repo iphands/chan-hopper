@@ -33,9 +33,10 @@ class Client:
         }
 
     def get_url(self, frag: str) -> str:
-        url = f"{self.host}{frag}"
-        # print(f"DEBUG: url: {url}")
-        return url
+        sep = ""
+        if not frag.startswith("/"):
+            sep = "/"
+        return f"{self.host}{sep}{frag}"
 
     def get_settings_data(self, chan_two: int, chan_five: int) -> Dict[str, Any]:
         json_data = {
