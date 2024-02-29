@@ -34,9 +34,9 @@ def main(
 
     # chans = [1]
 
-    client = Client(ap_id, unifi_host, dry=debug)
-    nm = NetworkManager(nm_uuid, dry=debug)
-    tester = Tester(iperf_host, t, dry=debug)
+    client = Client(ap_id, unifi_host, debug=debug)
+    nm = NetworkManager(nm_uuid, debug=debug)
+    tester = Tester(iperf_host, t, debug=debug)
 
     for chan in chans:
         print(f"#### Testing channel: {chan}")

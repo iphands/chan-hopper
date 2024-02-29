@@ -7,12 +7,12 @@ from typing import Any, Dict, Type
 
 
 class Tester:
-    def __init__(self, host: str, t: int, dry: bool = False) -> None:
+    def __init__(self, host: str, t: int, debug: bool = False) -> None:
         self.host = host
         self.time = t
         self.best = 0
         self.best_chan = 0
-        self.dry = dry
+        self.debug = debug
 
         # pyre-ignore[4]:
         self.results: Dict[int, Any] = {}
@@ -22,7 +22,7 @@ class Tester:
         return self.results
 
     def _run(self, chan: int) -> int:
-        if self.dry:
+        if self.debug:
             self.results[chan] = {}
             return 12345678
 

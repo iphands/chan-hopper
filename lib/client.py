@@ -7,10 +7,10 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class Client:
-    def __init__(self, ap_id: str, host: str, dry: bool = False) -> None:
+    def __init__(self, ap_id: str, host: str, debug: bool = False) -> None:
         self.ap_id = ap_id
         self.host = f"https://{host}"
-        self.dry = dry
+        self.debug = debug
 
         self.cookies = {
             "unifises": "W0SkTLVjwkR4fpuX7Wu5hnl8gYzVOCFR",
@@ -100,7 +100,7 @@ class Client:
         return response.json()
 
     def change_chan(self, chan_two: int, chan_five: int) -> str:
-        if self.dry:
+        if self.debug:
             return ""
 
         return self.put(

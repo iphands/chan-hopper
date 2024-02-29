@@ -12,7 +12,7 @@ from lib.tester import Tester
 
 class TestTester(unittest.TestCase):
     def test_run(self) -> None:
-        tester = Tester("example.com", 90, dry=True)
+        tester = Tester("example.com", 90, debug=True)
         f = io.StringIO()
         expected = actual = ""
         with contextlib.redirect_stdout(f):

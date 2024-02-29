@@ -6,9 +6,9 @@ from .utils import Say
 class Pinger:
 
     @staticmethod
-    def wait_for_ping(host: str, dry: bool = False) -> None:
+    def wait_for_ping(host: str, debug: bool = False) -> None:
         Say.start("Waiting for ping")
-        if dry:
+        if debug:
             Say.end()
             return
 

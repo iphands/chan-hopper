@@ -5,9 +5,9 @@ from .utils import Say
 
 
 class NetworkManager:
-    def __init__(self, uuid: str, dry: bool = False) -> None:
+    def __init__(self, uuid: str, debug: bool = False) -> None:
         self.uuid = uuid
-        self.dry = dry
+        self.debug = debug
 
     def try_reconnect(self) -> None:
         Say.end("WARN: trying reconnect!")
@@ -31,7 +31,7 @@ class NetworkManager:
         start = time.time()
         for _ in range(0, 300):
             for _ in range(1, 100):
-                if self.dry:
+                if self.debug:
                     out = f"channel {chan}"
                 else:
                     out = subprocess.check_output(["iw", "dev"])
