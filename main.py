@@ -38,10 +38,19 @@ def main(
     nm = NetworkManager(nm_uuid, debug=debug)
     tester = Tester(iperf_host, t, debug=debug)
 
+    # TODO auth and store token
+
+    # TODO let user know!
+    chan_two, chan_five = client.get_current_chans()
+
     for chan in chans:
         print(f"#### Testing channel: {chan}")
-        ## TODO need to get current chan and set only 2 or 5
-        client.change_chan(chan, 124)
+
+        if mode == "5":
+            client.change_chan(chan_two, chan)
+        else:
+            client.change_chan(chan, chan_five)
+
         if not nm.wait_for_chan(chan):
             continue
         Pinger.wait_for_ping(iperf_host, debug)

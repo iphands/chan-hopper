@@ -13,7 +13,7 @@ class Client:
         self.debug = debug
 
         self.cookies = {
-            "unifises": "W0SkTLVjwkR4fpuX7Wu5hnl8gYzVOCFR",
+            "unifises": "rGerhmyDYhUVkRaggzfBBzzKn0vCfSAl",
             "csrf_token": "hSZBMDrKl7wRbOJjEXnwH6OV7RVxdXgC",
         }
 
@@ -98,6 +98,15 @@ class Client:
             verify=False,
         )
         return response.json()
+
+    def get_current_chans(self) -> str:
+        if self.debug:
+            return 2, 124
+        ret = self.get(f"/api/s/default/stat/device")
+        for d in ret["data"]:
+            if d["_id"] == self.ap_id:
+                return d["radio_table"][0]["channel"], d["radio_table"][1]["channel"]
+
 
     def change_chan(self, chan_two: int, chan_five: int) -> str:
         if self.debug:
