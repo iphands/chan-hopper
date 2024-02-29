@@ -7,6 +7,19 @@ import contextlib
 
 from lib.client import Client
 from lib.utils import Utils, Say
+from lib.tester import Tester
+
+
+class TestTester(unittest.TestCase):
+    def test_run(self) -> None:
+        tester = Tester("example.com", 90, dry=True)
+        f = io.StringIO()
+        expected = actual = ""
+        with contextlib.redirect_stdout(f):
+            tester.run(11)
+            expected = "-- Running test: done (curr: 12.35 Mbs) best: 12.35 Mbs on 11"
+            actual = f.getvalue().strip()
+        self.assertEqual(expected, actual)
 
 
 class TestSay(unittest.TestCase):
