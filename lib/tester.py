@@ -21,11 +21,15 @@ class Tester:
     def get_results(self) -> Dict[int, Any]:
         return self.results
 
-    # pyre-ignore[2]:
-    def _run(self, client, chan: int) -> int:
+    def _run(self, chan: int) -> int:
         if self.dry:
             self.results[chan] = {}
             return 12345678
+
+        client = iperf3.Client()
+        client.duration = int(self.time)
+        client.server_hostname = self.host
+        client.port = 5201
 
         res = client.run()
         o = json.loads(res.text)
@@ -34,11 +38,7 @@ class Tester:
 
     def run(self, chan: int) -> None:
         Say.start("Running test")
-        client = iperf3.Client()
-        client.duration = int(self.time)
-        client.server_hostname = self.host
-        client.port = 5201
-        summary = self._run(client, chan)
+        summary = self._run(chan)
 
         if summary > self.best:
             self.best = summary

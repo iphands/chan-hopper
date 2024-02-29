@@ -5,8 +5,9 @@ from .utils import Say
 
 
 class NetworkManager:
-    def __init__(self, uuid: str) -> None:
+    def __init__(self, uuid: str, dry: bool = False) -> None:
         self.uuid = uuid
+        self.dry = dry
 
     def try_reconnect(self) -> None:
         Say.end("WARN: trying reconnect!")
@@ -26,17 +27,21 @@ class NetworkManager:
                 pass
 
     def wait_for_chan(self, chan: int) -> bool:
-        Say.start(f"Waiting for channel switch: {chan}")
+        Say.start(f"Waiting for channel switch {chan}")
         start = time.time()
         for _ in range(0, 300):
             for _ in range(1, 100):
-                out = subprocess.check_output(["iw", "dev"])
-                out = str(out)
+                if self.dry:
+                    out = f"channel {chan}"
+                else:
+                    out = subprocess.check_output(["iw", "dev"])
+                    out = str(out)
+
                 if f"channel {chan}" in out:
                     end = time.time()
                     delta = (end - start) * 1000
                     delta = "{:.2f}".format(delta)
-                    Say.end("channel switch hit after {delta}ms")
+                    Say.end(f"channel switch hit after {delta}ms")
                     return True
                 time.sleep(0.1)
                 continue

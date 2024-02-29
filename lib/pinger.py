@@ -6,8 +6,12 @@ from .utils import Say
 class Pinger:
 
     @staticmethod
-    def wait_for_ping(host: str) -> None:
+    def wait_for_ping(host: str, dry: bool = False) -> None:
         Say.start("Waiting for ping")
+        if dry:
+            Say.end()
+            return
+
         for i in range(0, 100):
             try:
                 ping(
