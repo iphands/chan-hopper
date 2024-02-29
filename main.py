@@ -47,12 +47,15 @@ def main(
         print(f"#### Testing channel: {chan}")
 
         if mode == "5":
-            client.change_chan(chan_two, chan)
+            chan_five = chan
         else:
-            client.change_chan(chan, chan_five)
+            chan_two = chan
+
+        client.change_chan(chan_two, chan_five)
 
         if not nm.wait_for_chan(chan):
             continue
+
         Pinger.wait_for_ping(iperf_host, debug)
         if not debug:
             time.sleep(5)  # settle just a bit

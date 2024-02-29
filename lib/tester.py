@@ -34,7 +34,11 @@ class Tester:
         res = client.run()
         o = json.loads(res.text)
         self.results[chan] = o
-        return o["end"]["sum_sent"]["bits_per_second"]
+
+        rbps = o["end"]["sum_received"]["bits_per_second"]
+        sbps = o["end"]["sum_sent"]["bits_per_second"]
+
+        return (rbps + sbps) / 2
 
     def run(self, chan: int) -> None:
         Say.start("Running test")

@@ -1,7 +1,8 @@
 .PHONY: debug
 debug:
 	python main.py \
-	   --debug true \
+	  --debug true \
+	  --time 1 \
 	  --iperf-host noir.lan \
 	  --unifi-host unifi-controller.noir.lan \
 	  --ap-id 5de8531246e0fb00f79da35c \
