@@ -1,7 +1,7 @@
 import requests
 import urllib3
 
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -80,7 +80,7 @@ class Client:
 
         return json_data
 
-    def put(self, frag: str, data: Dict[str, Any]) -> str:
+    def put(self, frag: str, data: Dict[str, Any]) -> Dict[str, Any]:
         response = requests.put(
             self.get_url(frag),
             cookies=self.cookies,
@@ -90,7 +90,7 @@ class Client:
         )
         return response.json()
 
-    def get(self, frag: str) -> str:
+    def get(self, frag: str) -> Dict[str, Any]:
         response = requests.get(
             self.get_url(frag),
             cookies=self.cookies,
@@ -99,20 +99,23 @@ class Client:
         )
         return response.json()
 
-    def get_current_chans(self) -> str:
-        if self.debug:
-            return 2, 124
-        ret = self.get(f"/api/s/default/stat/device")
-        for d in ret["data"]:
+    def get_current_chans(self) -> Tuple[int, int]:
+        # if self.debug:
+        #    return 2, 124
+
+        o = self.get(f"/api/s/default/stat/device")
+        for d in o["data"]:
             if d["_id"] == self.ap_id:
-                return d["radio_table"][0]["channel"], d["radio_table"][1]["channel"]
+                return int(d["radio_table"][0]["channel"]), int(d["radio_table"][1]["channel"])
+        raise Exception("Could not get current channels!")
 
-
-    def change_chan(self, chan_two: int, chan_five: int) -> str:
+    def change_chan(self, chan_two: int, chan_five: int) -> None:
         if self.debug:
-            return ""
+            return
 
-        return self.put(
+        # TODO fail on bad return!
+
+        self.put(
             f"/api/s/default/rest/device/{self.ap_id}",
             self.get_settings_data(chan_two, chan_five),
         )
