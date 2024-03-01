@@ -66,7 +66,7 @@ def test(
         return
 
     for chan in chans:
-        print(f"#### Testing channel: {chan}")
+        print(f"\n#### Testing channel: {chan}")
 
         if mode == "5":
             chan_five = chan

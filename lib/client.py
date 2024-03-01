@@ -12,6 +12,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class Client:
     def __init__(self, host: str, ap_id: str = "", debug: bool = False) -> None:
+        self.rerun_auth_msg: str = "Rerun with --auth param to store temp auth tokens"
         self.ap_id = ap_id
         self.host = host
         self.base_url = f"https://{host}"
@@ -42,8 +43,7 @@ class Client:
                 self.cookies = json.loads(f.read())
                 Say.end()
         except:
-            Say.end("ERROR: unable to load config")
-            print("ERROR: Rerun with --auth param to store temp auth tokens")
+            Say.err(f"Unable to load auth config, {self.rerun_auth_msg}")
             return False
         return True
 
@@ -131,8 +131,7 @@ class Client:
 
         res = self.get("/api/s/default/stat/device")
         if res.status_code != 200:
-            Say.end("ERROR: Unable to auth to controller")
-            print("ERROR: Rerun with --auth param to store temp auth tokens")
+            Say.err(f"Unable to auth to controller, {self.rerun_auth_msg}")
             assert False
 
         Say.end()

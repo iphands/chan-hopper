@@ -12,6 +12,10 @@ class Say:
     def end(s: str = "done") -> None:
         print(s)
 
+    @staticmethod
+    def err(s: str) -> None:
+        print(f"ERROR: {s}")
+
 
 class Utils:
 
