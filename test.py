@@ -47,7 +47,7 @@ class TestClient(unittest.TestCase):
         self.assertEqual(five, data["radio_table"][1]["channel"])
 
     def test_get_url(self) -> None:
-        c = Client("foobar", "example.com")
+        c = Client("example.com")
         self.assertEqual("https://example.com/foo", c.get_url("foo"))
         self.assertEqual("https://example.com/barfoo", c.get_url("/barfoo"))
 

@@ -1,12 +1,29 @@
 import click
 import json
 import time
+import sys
+import getpass
 
 from lib.tester import Tester
 from lib.client import Client
 from lib.pinger import Pinger
 from lib.nm import NetworkManager
-from lib.utils import Say, Utils
+from lib.utils import Utils
+
+
+@click.group("cli")
+def cli() -> None:
+    pass
+
+
+@click.command()
+@click.option("--unifi-host", help="Hostname of the Unifi controller", required=True)
+@click.option("--user", help="Username", required=True)
+def auth(unifi_host: str, user: str) -> None:
+    client = Client(unifi_host)
+    passw = getpass.getpass()
+    client.auth(user, passw)
+    pass
 
 
 @click.command()
@@ -17,7 +34,7 @@ from lib.utils import Say, Utils
 @click.option("--nm-uuid", help="UUID of NetworkManager connection to activate", required=True)
 @click.option("--time", "t", default=90, help="Time in seconds to run each iperf3 test")
 @click.option("--debug", "debug", default=False, help="Dry run with mock calls")
-def main(
+def test(
     ap_id: str,
     unifi_host: str,
     iperf_host: str,
@@ -34,14 +51,19 @@ def main(
 
     # chans = [1]
 
-    client = Client(ap_id, unifi_host, debug=debug)
+    client = Client(unifi_host, ap_id=ap_id, debug=debug)
+    if not client.init():
+        sys.exit(1)
+
     nm = NetworkManager(nm_uuid, debug=debug)
     tester = Tester(iperf_host, t, debug=debug)
 
-    # TODO auth and store token
+    chan_two = chan_five = 0
 
-    # TODO let user know!
-    chan_two, chan_five = client.get_current_chans()
+    try:
+        chan_two, chan_five = client.get_current_chans()
+    except:
+        return
 
     for chan in chans:
         print(f"#### Testing channel: {chan}")
@@ -59,7 +81,7 @@ def main(
         Pinger.wait_for_ping(iperf_host, debug)
         if not debug:
             time.sleep(5)  # settle just a bit
-        tester.run(chan)
+            tester.run(chan)
 
     end = time.time()
     delta = end - start
@@ -69,8 +91,10 @@ def main(
     with open(out_file, "w") as f:
         if not debug:
             f.write(json.dumps(tester.get_results()))
-        print(f"Wrote results to: {out_file}")
+            print(f"Wrote results to: {out_file}")
 
 
 if __name__ == "__main__":
-    main()
+    cli.add_command(auth)
+    cli.add_command(test)
+    cli()
