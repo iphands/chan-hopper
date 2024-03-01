@@ -13,8 +13,8 @@ class Client:
         self.debug = debug
 
         self.cookies = {
-            "unifises": "rGerhmyDYhUVkRaggzfBBzzKn0vCfSAl",
-            "csrf_token": "hSZBMDrKl7wRbOJjEXnwH6OV7RVxdXgC",
+            "unifises": "duu6qbpwEzNTEgeoFdqoRjbhiKoJclP3",
+            "csrf_token": "vl43nTFWqzFAI4nqLJ0WnwS4B6q43xwC",
         }
 
         self.headers: Dict[str, str] = {
@@ -30,7 +30,7 @@ class Client:
             "sec-fetch-mode": "cors",
             "sec-fetch-site": "same-origin",
             "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-            "x-csrf-token": "hSZBMDrKl7wRbOJjEXnwH6OV7RVxdXgC",
+            "x-csrf-token": "vl43nTFWqzFAI4nqLJ0WnwS4B6q43xwC",
         }
 
     def get_url(self, frag: str) -> str:
@@ -103,7 +103,7 @@ class Client:
         # if self.debug:
         #    return 2, 124
 
-        o = self.get(f"/api/s/default/stat/device")
+        o = self.get("/api/s/default/stat/device")
         for d in o["data"]:
             if d["_id"] == self.ap_id:
                 return int(d["radio_table"][0]["channel"]), int(d["radio_table"][1]["channel"])

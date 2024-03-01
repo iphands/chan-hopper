@@ -43,7 +43,7 @@ class NetworkManager:
                     delta = "{:.2f}".format(delta)
                     Say.end(f"channel switch hit after {delta}ms")
                     return True
-                time.sleep(0.1)
+                time.sleep(0.250)
                 continue
             self.try_reconnect()
             time.sleep(1)

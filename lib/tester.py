@@ -3,7 +3,7 @@ import iperf3
 import json
 
 from .utils import Say, Utils
-from typing import Any, Dict, Type
+from typing import Any, Dict
 
 
 class Tester:
@@ -34,6 +34,8 @@ class Tester:
         res = client.run()
         o = json.loads(res.text)
         self.results[chan] = o
+
+        # TODO store error and continue if test was bad
 
         rbps = o["end"]["sum_received"]["bits_per_second"]
         sbps = o["end"]["sum_sent"]["bits_per_second"]
