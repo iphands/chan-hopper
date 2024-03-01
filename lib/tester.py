@@ -35,8 +35,6 @@ class Tester:
         o = json.loads(res.text)
         self.results[chan] = o
 
-        # TODO store error and continue if test was bad
-
         rbps = o["end"]["sum_received"]["bits_per_second"]
         sbps = o["end"]["sum_sent"]["bits_per_second"]
 
@@ -44,7 +42,13 @@ class Tester:
 
     def run(self, chan: int) -> None:
         Say.start("Running test")
-        summary = self._run(chan)
+        summary = 0
+        try:
+            summary = self._run(chan)
+        except:
+            Say.end("ERROR: test failed")
+            self.results[chan] = {"error": "error"}
+            return
 
         if summary > self.best:
             self.best = summary
