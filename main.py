@@ -30,7 +30,7 @@ def main(
     channels_two, channels_five = Utils.get_channels()
     chans = channels_two
     if mode == "5":
-        channels_five
+        chans = channels_five
 
     # chans = [1]
 
