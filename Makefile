@@ -1,6 +1,6 @@
 .PHONY: debug
 debug:
-	python main.py \
+	python main.py test \
 	  --debug true \
 	  --time 1 \
 	  --iperf-host noir.lan \

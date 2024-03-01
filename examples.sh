@@ -9,7 +9,7 @@
 
 echo
 echo "-- For HandsNet"
-echo "python main.py \
+echo "python main.py test \
   --iperf-host noir.lan \
   --unifi-host unifi-controller.noir.lan \
   --ap-id 5de8531246e0fb00f79da35c\
@@ -18,7 +18,7 @@ echo "python main.py \
 "
 
 echo "-- For HandsNet5"
-echo "python main.py \
+echo "python main.py test \
   --iperf-host noir.lan \
   --unifi-host unifi-controller.noir.lan \
   --ap-id 5de8531246e0fb00f79da35c\
