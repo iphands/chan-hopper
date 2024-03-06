@@ -71,9 +71,10 @@ def test_from_wired(
     test(Mode.WIRED, ap_id, unifi_host, iperf_host, mode, "", t, debug)
 
 
-def dump_data(start: int, debug: bool) -> None:
+def dump_data(start: int, data: str, debug: bool) -> None:
     out_file = f"results.{start}.json"
     with open(out_file, "w") as f:
+        f.write(data)
         print(f"Wrote results to: {out_file}")
 
 
@@ -144,13 +145,13 @@ debug: {debug}
         if not debug:
             time.sleep(5)  # settle just a bit
             tester.run(chan)
-        dump_data(int(start), debug)
+        dump_data(int(start), json.dumps(tester.get_results()), debug)
 
     end = time.time()
     delta = end - start
     print("\nDone!")
     print("Run took {:.2f}s".format(delta))
-    dump_data(int(start), debug)
+    dump_data(int(start), json.dumps(tester.get_results()), debug)
 
 
 if __name__ == "__main__":
