@@ -6,6 +6,7 @@ import getpass
 
 from enum import Enum
 
+from lib.remote import Remote
 from lib.tester import Tester
 from lib.client import Client
 from lib.pinger import Pinger
@@ -117,6 +118,7 @@ debug: {debug}
 
     nm = NetworkManager(nm_uuid, debug=debug)
     tester = Tester(iperf_host, t, debug=debug)
+    remote = Remote(iperf_host, "wlan0", debug=debug)
 
     chan_two = chan_five = 0
 
@@ -139,9 +141,12 @@ debug: {debug}
             if not nm.wait_for_chan(chan):
                 continue
         else:
-            time.sleep(5)
+            Pinger.wait_for_ping(iperf_host, debug)
+            if not remote.wait_for_chan(chan):
+                continue
 
         Pinger.wait_for_ping(iperf_host, debug)
+
         if not debug:
             time.sleep(5)  # settle just a bit
             tester.run(chan)

@@ -12,10 +12,21 @@ def process(fname: str, dt: str = "") -> None:
     with open(fname, "r") as f:
         o = json.loads(f.read())
         for chan, data in o.items():
+            if "end" not in data:
+                continue
+
+            zeros = 0
+            for i in data["intervals"]:
+                bps = i["sum"]["bits_per_second"]
+                if bps == 0:
+                    zeros += 1
+
             s_bps = data["end"]["sum_sent"]["bits_per_second"]
             r_bps = data["end"]["sum_received"]["bits_per_second"]
             s_mbps = mbps(s_bps)
             r_mbps = mbps(r_bps)
+            sum_mbps = float(s_mbps) + float(r_mbps)
+            sum_mbps = str(round(sum_mbps, 2))
 
             sender = data["end"]["streams"][0]["sender"]
             max_rtt = sender["max_rtt"]
@@ -28,10 +39,12 @@ def process(fname: str, dt: str = "") -> None:
 
             if dt != "":
                 print(
-                    f"{dt}, {chan}, {s_mbps}, {r_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}"
+                    f"{dt}, {chan}, {s_mbps}, {r_mbps}, {sum_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}, {zeros}"
                 )
                 continue
-            print(f"{chan}, {s_mbps}, {r_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}")
+            print(
+                f"{chan}, {s_mbps}, {r_mbps}, {sum_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}, {zeros}"
+            )
 
 
 def process_all(path: str) -> None:
@@ -42,7 +55,7 @@ def process_all(path: str) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2 and sys.argv[1] == "many":
+    if len(sys.argv) == 3 and sys.argv[1] == "many":
         process_all(sys.argv[2])
         sys.exit(0)
 
