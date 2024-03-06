@@ -4,11 +4,18 @@ import time
 import sys
 import getpass
 
+from enum import Enum
+
 from lib.tester import Tester
 from lib.client import Client
 from lib.pinger import Pinger
 from lib.nm import NetworkManager
 from lib.utils import Utils
+
+
+class Mode(Enum):
+    WIRELESS = 1
+    WIRED = 2
 
 
 @click.group("cli")
@@ -34,7 +41,7 @@ def auth(unifi_host: str, user: str) -> None:
 @click.option("--nm-uuid", help="UUID of NetworkManager connection to activate", required=True)
 @click.option("--time", "t", default=90, help="Time in seconds to run each iperf3 test")
 @click.option("--debug", "debug", default=False, help="Dry run with mock calls")
-def test(
+def test_from_client(
     ap_id: str,
     unifi_host: str,
     iperf_host: str,
@@ -43,6 +50,52 @@ def test(
     t: int = 90,
     debug: bool = False,
 ) -> None:
+    test(Mode.WIRELESS, ap_id, unifi_host, iperf_host, mode, nm_uuid, t, debug)
+
+
+@click.command()
+@click.option("--ap-id", help="The ID of the AP in Unif controller", required=True)
+@click.option("--unifi-host", help="Hostname of the Unifi controller", required=True)
+@click.option("--iperf-host", help="Hostname of the iperf3 server", required=True)
+@click.option("--mode", type=click.Choice(["2", "5"]), help="2.4Ghz or 5Ghz mode", required=True)
+@click.option("--time", "t", default=90, help="Time in seconds to run each iperf3 test")
+@click.option("--debug", "debug", default=False, help="Dry run with mock calls")
+def test_from_wired(
+    ap_id: str,
+    unifi_host: str,
+    iperf_host: str,
+    mode: int,
+    t: int = 90,
+    debug: bool = False,
+) -> None:
+    test(Mode.WIRED, ap_id, unifi_host, iperf_host, mode, "", t, debug)
+
+
+def test(
+    m: Mode,
+    ap_id: str,
+    unifi_host: str,
+    iperf_host: str,
+    mode: int,
+    nm_uuid: str,
+    t: int = 90,
+    debug: bool = False,
+) -> None:
+    if debug:
+        print(
+            f"""DEBUG:
+m: {m}
+ap_id: {ap_id}
+unifi_host: {unifi_host}
+iperf_host: {iperf_host}
+mode: {mode}
+nm_uuid: {nm_uuid}
+t: {t}
+debug: {debug}
+
+"""
+        )
+
     start = time.time()
     channels_two, channels_five = Utils.get_channels()
     chans = channels_two
@@ -75,8 +128,11 @@ def test(
 
         client.change_chan(chan_two, chan_five)
 
-        if not nm.wait_for_chan(chan):
-            continue
+        if m == Mode.WIRELESS:
+            if not nm.wait_for_chan(chan):
+                continue
+        else:
+            time.sleep(5)
 
         Pinger.wait_for_ping(iperf_host, debug)
         if not debug:
@@ -96,5 +152,6 @@ def test(
 
 if __name__ == "__main__":
     cli.add_command(auth)
-    cli.add_command(test)
+    cli.add_command(test_from_client)
+    cli.add_command(test_from_wired)
     cli()

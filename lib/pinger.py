@@ -12,18 +12,28 @@ class Pinger:
             Say.end()
             return
 
+        retried = False
         for i in range(0, 100):
             try:
-                ping(
+                res = ping(
                     host,
-                    count=4,
+                    count=10,
                     interval=0.250,
-                    timeout=2,
+                    timeout=0.100,
                     id=None,
                     source=None,
                     family=None,
                     privileged=False,
                 )
+
+                if res.packet_loss != 0.0:
+                    Say.mid(".")
+                    retried = True
+                    continue
+
+                if retried:
+                    Say.mid(" ")
+
                 Say.end()
                 return
             except:

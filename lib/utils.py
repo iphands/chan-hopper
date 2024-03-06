@@ -9,6 +9,11 @@ class Say:
         sys.stdout.flush()
 
     @staticmethod
+    def mid(s: str) -> None:
+        sys.stdout.write(f"{s}")
+        sys.stdout.flush()
+
+    @staticmethod
     def end(s: str = "done") -> None:
         print(s)
 

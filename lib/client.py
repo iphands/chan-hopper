@@ -127,7 +127,7 @@ class Client:
         if self.debug:
             return 2, 124
 
-        Say.start(f"Getting current channels from controller ({self.host}")
+        Say.start(f"Getting current channels from controller ({self.host})")
 
         res = self.get("/api/s/default/stat/device")
         if res.status_code != 200:

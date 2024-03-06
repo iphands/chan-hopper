@@ -8,7 +8,7 @@ def mbps(n: int) -> str:
 
 
 # print("chan, sent, recv, max_rtt, min_rtt, mean_rtt, retrans")
-def process(fname: str, dt: str) -> None:
+def process(fname: str, dt: str = "") -> None:
     with open(fname, "r") as f:
         o = json.loads(f.read())
         for chan, data in o.items():
@@ -25,7 +25,7 @@ def process(fname: str, dt: str) -> None:
 
             # print(f'-- {chan}')
             # print(f'  {sent_mbps}')
-            if dt:
+            if dt != "":
                 print(
                     f"{dt}, {chan}, {s_mbps}, {r_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}"
                 )
