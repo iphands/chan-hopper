@@ -25,6 +25,7 @@ def process(fname: str, dt: str = "") -> None:
 
             # print(f'-- {chan}')
             # print(f'  {sent_mbps}')
+
             if dt != "":
                 print(
                     f"{dt}, {chan}, {s_mbps}, {r_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}"
@@ -41,7 +42,7 @@ def process_all(path: str) -> None:
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == "many":
+    if len(sys.argv) == 2 and sys.argv[1] == "many":
         process_all(sys.argv[2])
         sys.exit(0)
 

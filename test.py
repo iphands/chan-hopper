@@ -17,7 +17,7 @@ class TestTester(unittest.TestCase):
         expected = actual = ""
         with contextlib.redirect_stdout(f):
             tester.run(11)
-            expected = "-- Running test: done (curr: 12.35 Mbs) best: 12.35 Mbs on 11"
+            expected = "-- Running test: done, curr: 12.35 Mbs, best: 12.35 Mbs on 11"
             actual = f.getvalue().strip()
         self.assertEqual(expected, actual)
 

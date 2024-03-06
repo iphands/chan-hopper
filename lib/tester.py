@@ -55,6 +55,6 @@ class Tester:
             self.best_chan = chan
 
         deets = (
-            f"done (curr: {Utils.mbps(summary)}) best: {Utils.mbps(self.best)} on {self.best_chan}"
+            f"done, curr: {Utils.mbps(summary)}, best: {Utils.mbps(self.best)} on {self.best_chan}"
         )
         Say.end(deets)
