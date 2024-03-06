@@ -19,7 +19,7 @@ echo "python main.py test-from-wired \
 
 echo "-- For HandsNet5"
 echo "python main.py test-from-client \
-  --iperf-host noir.lan \
+  --iperf-host rpi3.lan \
   --unifi-host unifi-controller.noir.lan \
   --ap-id 5de8531246e0fb00f79da35c \
   --mode 5 \
