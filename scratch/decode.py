@@ -34,17 +34,13 @@ def process(fname: str, dt: str = "") -> None:
             mean_rtt = sender["mean_rtt"]
             retrans = sender["retransmits"]
 
-            # print(f'-- {chan}')
-            # print(f'  {sent_mbps}')
+            arr = [chan, s_mbps, r_mbps, sum_mbps, max_rtt, min_rtt, mean_rtt, retrans, zeros]
 
             if dt != "":
-                print(
-                    f"{dt}, {chan}, {s_mbps}, {r_mbps}, {sum_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}, {zeros}"
-                )
-                continue
-            print(
-                f"{chan}, {s_mbps}, {r_mbps}, {sum_mbps}, {max_rtt}, {min_rtt}, {mean_rtt}, {retrans}, {zeros}"
-            )
+                arr.insert(0, dt)
+
+            arr = map(lambda x: str(x), arr)
+            print(", ".join(arr))
 
 
 def process_all(path: str) -> None:

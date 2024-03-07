@@ -141,6 +141,7 @@ debug: {debug}
             if not nm.wait_for_chan(chan):
                 continue
         else:
+            time.sleep(5)
             Pinger.wait_for_ping(iperf_host, debug)
             if not remote.wait_for_chan(chan):
                 continue
